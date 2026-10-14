@@ -2,10 +2,23 @@ import Placeholder from "./Placeholder";
 
 function Tile({ item, to }) {
   return (
-    <a href={to} className="flex flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:text-brand hover:shadow-lg">
-      <Placeholder src={item.image} label={`${item.name} illustration`} round className="h-20 w-20" />
-      {item.name}
+    <a
+      href={to}
+      className="card-hover group flex flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center text-sm font-medium text-[#172238] shadow-sm ring-1 ring-[#E2E9ED] transition"
+    >
+      <div className="overflow-hidden rounded-xl">
+        <Placeholder
+          src={item.image}
+          label={`${item.name} illustration`}
+          round
+          className="h-16 w-16 transition group-hover:scale-105"
+        />
+      </div>
+      <span className="text-xs font-semibold leading-tight text-[#172238] group-hover:text-[#2D8982]">
+        {item.name}
+      </span>
     </a>
   );
 }
+
 export default Tile;

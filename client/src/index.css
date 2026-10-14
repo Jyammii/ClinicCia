@@ -1,18 +1,216 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/* ─── Design Tokens ─────────────────────────────────────────────────────────── */
 @theme {
-  --font-sans: "Poppins", sans-serif;
-  /* Change these three tokens to re-theme the whole site */
-  --color-brand: #1a6fe0;
-  --color-brand-dark: #1257b8;
-  --color-brand-light: #e8f1fd;
+  /* Typography */
+  --font-sans: "DM Sans", sans-serif;
+  --font-serif: "DM Serif Display", serif;
+
+  /* Brand palette */
+  --color-brand:        #102943;
+  --color-brand-mid:    #1a4a6e;
+  --color-brand-dark:   #0a1d2e;
+  --color-brand-light:  #EAF5F1;
+  --color-teal:         #2D8982;
+  --color-teal-dark:    #226b66;
+  --color-teal-light:   #d4eeeb;
+  --color-mint:         #EAF5F1;
+  --color-warm-white:   #F8FAF9;
+  --color-dark-text:    #172238;
+  --color-border:       #E2E9ED;
+
+  /* Legacy alias — keeps existing `text-brand`, `bg-brand` classes working */
+  --color-brand-100:    #EAF5F1;
 }
 
-/* Print only the invoice / payslip that is open in a modal. */
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  color: #172238;
+  background-color: #F8FAF9;
+  line-height: 1.6;
+}
+
+/* ─── Serif headlines utility ───────────────────────────────────────────────── */
+.font-serif { font-family: "DM Serif Display", serif; }
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #F8FAF9; }
+::-webkit-scrollbar-thumb { background: #CBD5D8; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #2D8982; }
+
+/* ─── Focus visible ─────────────────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid #2D8982; outline-offset: 2px; border-radius: 4px; }
+
+/* ─── Selection ─────────────────────────────────────────────────────────────── */
+::selection { background: #d4eeeb; color: #102943; }
+
+/* ─── Animations ─────────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-up  { animation: fadeUp  0.5s ease both; }
+.animate-fade-in  { animation: fadeIn  0.4s ease both; }
+.anim-delay-1 { animation-delay: 0.1s; }
+.anim-delay-2 { animation-delay: 0.2s; }
+.anim-delay-3 { animation-delay: 0.3s; }
+
+/* ─── Print (preserve existing print logic) ─────────────────────────────────── */
 @media print {
   body * { visibility: hidden; }
   .print-area, .print-area * { visibility: visible; }
   .print-area { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; }
   .no-print { display: none !important; }
 }
+
+/* ─── Sidebar nav active/hover transitions ───────────────────────────────────── */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #94a3b8;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sidebar-link:hover {
+  background: rgba(45, 137, 130, 0.12);
+  color: #2D8982;
+}
+.sidebar-link.active {
+  background: rgba(45, 137, 130, 0.18);
+  color: #EAF5F1;
+  font-weight: 600;
+}
+
+/* ─── Dashboard layout ───────────────────────────────────────────────────────── */
+.dash-sidebar {
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+  background: #102943;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0.75rem 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  transition: transform 0.3s ease;
+}
+.dash-sidebar-logo {
+  padding: 0 0.5rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 1rem;
+}
+.dash-main {
+  margin-left: 220px;
+  min-height: 100vh;
+  background: #F0F4F7;
+  display: flex;
+  flex-direction: column;
+}
+.dash-topbar {
+  background: #fff;
+  border-bottom: 1px solid #E2E9ED;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.dash-content {
+  padding: 2rem 1.5rem;
+  flex: 1;
+}
+
+@media (max-width: 1023px) {
+  .dash-sidebar {
+    transform: translateX(-100%);
+  }
+  .dash-sidebar.open {
+    transform: translateX(0);
+  }
+  .dash-main {
+    margin-left: 0;
+  }
+}
+
+/* ─── Card micro-elevation ───────────────────────────────────────────────────── */
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 8px 32px rgba(16,41,67,0.10);
+  transform: translateY(-2px);
+}
+
+/* ─── Table row hover ────────────────────────────────────────────────────────── */
+tbody tr:hover { background: #f5f8fa; }
+
+/* ─── Stat card accent bar ───────────────────────────────────────────────────── */
+.stat-card { position: relative; overflow: hidden; }
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: #2D8982;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ─── Section divider ────────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2D8982;
+}
+
+/* ─── Pill tag ───────────────────────────────────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Sidebar mobile overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(16,41,67,0.5);
+  z-index: 29;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.visible { display: block; }

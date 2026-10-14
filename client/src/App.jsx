@@ -22,20 +22,27 @@ function Shell() {
   const [page, id, sub] = path.split("/").filter(Boolean);
   const here = location.hash.slice(1) || "/";
   const guarded = ["book", "appointments", "dashboard"].includes(page);
+  const isDashboard = page === "dashboard";
+
   let view;
   if (guarded && !user) view = <Auth next={here} notice="Please log in or sign up to continue." />;
-  else if (page === "login") view = <Auth next={query.next || "/"} />;
-  else if (page === "find") view = <Home />;
-  else if (page === "browse") view = <Browse kind={id} />;
-  else if (page === "search") view = <Search query={query} />;
-  else if (page === "doctor") view = <Doctor id={id} />;
-  else if (page === "book") view = <Book id={id} query={query} />;
+  else if (page === "login")        view = <Auth next={query.next || "/"} />;
+  else if (page === "find")         view = <Home />;
+  else if (page === "browse")       view = <Browse kind={id} />;
+  else if (page === "search")       view = <Search query={query} />;
+  else if (page === "doctor")       view = <Doctor id={id} />;
+  else if (page === "book")         view = <Book id={id} query={query} />;
   else if (page === "appointments") view = <Appointments query={query} />;
-  else if (page === "dashboard") view = <Dashboard section={id} sub={sub} query={query} />;
-  else view = <Landing query={query} />;
+  else if (page === "dashboard")    view = <Dashboard section={id} sub={sub} query={query} />;
+  else                              view = <Landing query={query} />;
+
+  // Dashboard has its own full-page layout (sidebar + topbar). No outer navbar/footer.
+  if (isDashboard && user) {
+    return <div style={{ background: "#F0F4F7" }}>{view}</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen" style={{ background: "#F8FAF9", color: "#172238" }}>
       <Navbar />
       {view}
       <Footer />

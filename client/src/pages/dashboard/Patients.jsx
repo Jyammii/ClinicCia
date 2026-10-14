@@ -25,7 +25,7 @@ function Patients({ sub, query }) {
   ];
   const columns = [
     { label: "Patient no.", key: "patientNo" },
-    { label: "Name", render: (p) => <a href={can(user, "emr") ? `#/dashboard/patients/${p._id}` : undefined} className={can(user, "emr") ? "font-medium text-brand hover:underline" : "font-medium"}>{p.name}</a> },
+    { label: "Name", render: (p) => <a href={can(user, "emr") ? `#/dashboard/patients/${p._id}` : undefined} className={can(user, "emr") ? "font-semibold text-[#2D8982] hover:underline" : "font-medium"}>{p.name}</a> },
     { label: "Age / Sex", render: (p) => [p.birthdate ? `${age(p.birthdate)} yrs` : "", p.sex].filter(Boolean).join(" · ") || "-" },
     { label: "Mobile", render: (p) => p.phone || "-" },
     { label: "HMO", render: (p) => p.hmo || "-" },
@@ -33,7 +33,7 @@ function Patients({ sub, query }) {
   ];
   return (
     <Crud noun="patient" endpoint="/patients" columns={columns} fields={fields} newLabel="New patient" modalWide canDelete={can(user, "emr")}
-      rowActions={(p) => can(user, "emr") && <a href={`#/dashboard/patients/${p._id}`} className="text-brand">Record</a>} />
+      rowActions={(p) => can(user, "emr") && <a href={`#/dashboard/patients/${p._id}`} className="rounded-lg bg-[#EAF5F1] px-3 py-1.5 text-xs font-semibold text-[#2D8982] hover:bg-[#d4eeeb]">Record</a>} />
   );
 }
 export default Patients;
