@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", sans-serif;
+  /* Change these three tokens to re-theme the whole site */
+  --color-brand: #1a6fe0;
+  --color-brand-dark: #1257b8;
+  --color-brand-light: #e8f1fd;
+}
+
+/* Print only the invoice / payslip that is open in a modal. */
+@media print {
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; }
+  .no-print { display: none !important; }
+}
