@@ -19,9 +19,12 @@ const slug = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g
 const tiles = (arr) => arr.map((n) => ({ id: slug(n), name: n, image: "" }));
 const named = (id, name) => ({ id, name, image: "" });
 
-await connectDB();
-for (const c of await mongoose.connection.db.collections()) await c.deleteMany({});
-await Promise.all(mongoose.modelNames().map((m) => mongoose.model(m).syncIndexes()));
+export async function runSeed(disconnect = false) {
+  if (mongoose.connection.readyState !== 1) {
+    await connectDB();
+  }
+  for (const c of await mongoose.connection.db.collections()) await c.deleteMany({});
+  await Promise.all(mongoose.modelNames().map((m) => mongoose.model(m).syncIndexes()));
 
 // ---- Site content (all images empty = placeholders the admin can replace) ---
 await Site.create({
@@ -133,5 +136,13 @@ for (let back = 14; back >= -6; back--) {
   for (const [i, s] of staff.entries()) await Shift.create({ staff: s._id, date, type: types[i], status: back > 0 ? "Present" : "Scheduled" });
 }
 
-console.log(`Seeded. Log in with admin@clinic.ph / ${PASSWORD} (other demo roles: doctor@, reception@, pharmacy@, cashier@, nurse@, patient@clinic.ph).`);
-await mongoose.disconnect();
+  console.log(`Seeded. Log in with admin@clinic.ph / ${PASSWORD} (other demo roles: doctor@, reception@, pharmacy@, cashier@, nurse@, patient@clinic.ph).`);
+  if (disconnect) {
+    await mongoose.disconnect();
+  }
+}
+
+if (process.argv[1] && process.argv[1].endsWith("seed.js")) {
+  runSeed(true);
+}
+

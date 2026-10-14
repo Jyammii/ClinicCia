@@ -54,6 +54,11 @@ app.use(sanitize);
 
 app.use("/uploads", express.static(uploadDir, { maxAge: "7d" }));
 app.get("/api/health", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+app.all("/api/seed", async (req, res) => {
+  const { runSeed } = await import("./seed.js");
+  await runSeed(false);
+  res.json({ ok: true, message: "Database seeded successfully with all demo data!" });
+});
 
 app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 600, standardHeaders: true, legacyHeaders: false }));
 app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false, message: { message: "Too many attempts. Please wait a few minutes." } }), authRoutes);
